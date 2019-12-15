@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    private const int WIN_COMBINATION_SIZE = 3;
+    private const int WIN_COMBINATION_SIZE = 5;
 
     [SerializeField]
     private WhichSize whichSize;
@@ -82,13 +82,12 @@ public class GameController : MonoBehaviour
 
                 Vector2 yourIndexes;
                 Vector2 enemyIndexes;
-                try
+
+                yourIndexes = placeFigure.ClickPostionToIndexes(clickPosition);
+                if (yourIndexes.x == -1 || yourIndexes.y == -1)
                 {
-                    yourIndexes = placeFigure.ClickPostionToIndexes(clickPosition);
-                }
-                catch
-                {
-                    break;
+                    yield return new WaitForEndOfFrame();
+                    continue;
                 }
 
                 if (field[(int)yourIndexes.x, (int)yourIndexes.y] == -1)
@@ -182,6 +181,8 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < whichSize.FieldSize; i++)
         {
+            horizontal = 0;
+            vertical = 0;
             for (int j = 0; j < whichSize.FieldSize; j++)
             {
                 if (field[i, j] == (int)figureType)

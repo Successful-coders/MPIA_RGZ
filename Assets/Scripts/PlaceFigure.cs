@@ -75,7 +75,7 @@ public class PlaceFigure : MonoBehaviour
         }
         else
         {
-            throw new System.Exception("OutOfBoundsFieldClick");
+            return new Vector2(-1, -1);
         }
     }
 
