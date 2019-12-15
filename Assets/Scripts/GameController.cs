@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    private const int WIN_COMBINATION_SIZE = 3;
+
     [SerializeField]
     private WhichSize whichSize;
     [SerializeField]
@@ -23,6 +25,8 @@ public class GameController : MonoBehaviour
     private Transform figureStack;
     [SerializeField]
     private Bot bot;
+    [SerializeField]
+    private WinPanel winPanel;
 
     private bool isGameStart;
     private int[,] field;
@@ -91,18 +95,19 @@ public class GameController : MonoBehaviour
                 {
                     placeFigure.Put(whichGame.YourFigure, yourIndexes);
                     field[(int)yourIndexes.x, (int)yourIndexes.y] = (int)whichGame.YourFigure;
-                    
-                    if((FigureType)CheckWinSituation() == whichGame.EnemyFigure)
+
+                    if (IsWinSituation(whichGame.YourFigure))
                     {
-                        Debug.Log("Enemy win");
-                    }
-                    else if((FigureType)CheckWinSituation() == whichGame.YourFigure)
-                    {
-                        Debug.Log("You win");
+                        winPanel.Appear("Вы выйграли!");
+
+                        isGameStart = false;
+                        break;
                     }
 
                     if (!HasFieldPlace())
                     {
+                        winPanel.Appear("Ничья!");
+
                         isGameStart = false;
                         break;
                     }
@@ -111,17 +116,18 @@ public class GameController : MonoBehaviour
                     placeFigure.Put(whichGame.EnemyFigure, enemyIndexes);
                     field[(int)enemyIndexes.x, (int)enemyIndexes.y] = (int)whichGame.EnemyFigure;
 
-                    if ((FigureType)CheckWinSituation() == whichGame.EnemyFigure)
+                    if (IsWinSituation(whichGame.EnemyFigure))
                     {
-                        Debug.Log("Enemy win");
-                    }
-                    else if ((FigureType)CheckWinSituation() == whichGame.YourFigure)
-                    {
-                        Debug.Log("You win");
+                        winPanel.Appear("Бот выйграл!");
+
+                        isGameStart = false;
+                        break;
                     }
 
                     if (!HasFieldPlace())
                     {
+                        winPanel.Appear("Ничья!");
+
                         isGameStart = false;
                         break;
                     }
@@ -130,6 +136,8 @@ public class GameController : MonoBehaviour
                 {
                     if (!HasFieldPlace())
                     {
+                        winPanel.Appear("Ничья!");
+
                         isGameStart = false;
                         break;
                     }
@@ -138,8 +146,6 @@ public class GameController : MonoBehaviour
 
             yield return null;
         }
-
-        Debug.Log("Game over");
     }
 
     private bool HasFieldPlace()
@@ -169,17 +175,78 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private int CheckWinSituation()
+    private bool IsWinSituation(FigureType figureType)
     {
-        for (int i = 0; i < field.GetLength(0); i++)
+        //Проверяем горизонталь и вертикаль
+        int mainDiag = 0, supDiag = 0, horizontal = 0, vertical = 0;
+
+        for (int i = 0; i < whichSize.FieldSize; i++)
         {
-            for (int j = 0; j < field.GetLength(1); j++)
+            for (int j = 0; j < whichSize.FieldSize; j++)
             {
-                //TODO
+                if (field[i, j] == (int)figureType)
+                {
+                    horizontal++;
+                }
+                else if (horizontal == WIN_COMBINATION_SIZE)
+                {
+                    return true;
+                }
+                else
+                {
+                    horizontal = 0;
+                }
+
+                if (field[j, i] == (int)figureType)
+                {
+                    vertical++;
+                }
+                else if (vertical == WIN_COMBINATION_SIZE)
+                {
+                    return true;
+                }
+                else
+                {
+                    vertical = 0;
+                }
+            }
+            if (horizontal == WIN_COMBINATION_SIZE || vertical == WIN_COMBINATION_SIZE)
+            {
+                return true;
             }
         }
 
-        return -1;
+        //Диагонали
+        for (int j = 0; j < whichSize.FieldSize - WIN_COMBINATION_SIZE + 1; j++)
+        {
+            for (int k = 0; k < whichSize.FieldSize - WIN_COMBINATION_SIZE + 1; k++)
+            {
+                int indexJ = j;
+                int indexK = k;
+
+                mainDiag = 0;
+                supDiag = 0;
+                int boardIndex = indexK + (WIN_COMBINATION_SIZE - 1);
+                for (int i = 0; i < WIN_COMBINATION_SIZE; i++, indexJ++, indexK++)
+                {
+                    if (field[(whichSize.FieldSize - 1) - indexJ, indexK] == (int)figureType)
+                    {
+                        mainDiag++;
+                    }
+
+                    if (field[(whichSize.FieldSize - 1) - indexJ, boardIndex - indexK] == (int)figureType)
+                    {
+                        supDiag++;
+                    }
+                }
+                if (mainDiag == WIN_COMBINATION_SIZE || supDiag == WIN_COMBINATION_SIZE)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public int[,] Field

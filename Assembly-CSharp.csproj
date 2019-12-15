@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\WhichFirst.cs" />
     <Compile Include="Assets\Scripts\WhichGame.cs" />
     <Compile Include="Assets\Scripts\WhichSize.cs" />
+    <Compile Include="Assets\Scripts\WinPanel.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>M:/NSTU/Gomoku/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
