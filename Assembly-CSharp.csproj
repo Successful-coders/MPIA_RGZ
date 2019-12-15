@@ -63,10 +63,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Bot.cs" />
     <Compile Include="Assets\Scripts\FieldGenerator.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\Menu.cs" />
+    <Compile Include="Assets\Scripts\MenuBtn.cs" />
     <Compile Include="Assets\Scripts\MenuController.cs" />
+    <Compile Include="Assets\Scripts\PlaceFigure.cs" />
     <Compile Include="Assets\Scripts\StartBtn.cs" />
     <Compile Include="Assets\Scripts\WhichFirst.cs" />
     <Compile Include="Assets\Scripts\WhichGame.cs" />

@@ -7,7 +7,8 @@ public class WhichGame : MonoBehaviour
 {
     [SerializeField]
     private Button buttonCross, buttonCircle;
-    private FigureType figure = FigureType.CROSS;
+    private FigureType yourFigure = FigureType.CROSS;
+    private FigureType enemyFigure = FigureType.CIRCLE;
 
     private void Start()
     {
@@ -19,7 +20,8 @@ public class WhichGame : MonoBehaviour
         buttonCross.interactable = false;
         buttonCircle.interactable = true;
 
-        figure = FigureType.CROSS;
+        yourFigure = FigureType.CROSS;
+        enemyFigure = FigureType.CIRCLE;
     }
 
     public void OnPressCircle()
@@ -27,14 +29,22 @@ public class WhichGame : MonoBehaviour
         buttonCircle.interactable = false;
         buttonCross.interactable = true;
 
-        figure = FigureType.CIRCLE;
+        yourFigure = FigureType.CIRCLE;
+        enemyFigure = FigureType.CROSS;
     }
 
-    public FigureType SelectedFigure
+    public FigureType YourFigure
     {
         get
         {
-            return figure;
+            return yourFigure;
+        }
+    }
+    public FigureType EnemyFigure
+    {
+        get
+        {
+            return enemyFigure;
         }
     }
 }

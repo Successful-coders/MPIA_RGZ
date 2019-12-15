@@ -10,13 +10,19 @@ public class FieldGenerator : MonoBehaviour
     private GameObject line;
 
     private int padding = 60;
+    private float offset;
+    private int workScreenHeight;
 
-    public void Generate(int fieldCount)
+    private void Start()
     {
         SetLineSize();
 
-        int workScreenHeight = Screen.height - padding;
-        int offset = workScreenHeight / fieldCount;
+        workScreenHeight = Screen.height - padding;
+    }
+
+    public void Generate(int fieldCount)
+    {
+        offset = workScreenHeight / fieldCount;
 
         Vector3 position = new Vector3(0, -workScreenHeight / 2 + offset, 0);
         Vector3 rotation = new Vector3(0, 0, 90);
@@ -50,8 +56,31 @@ public class FieldGenerator : MonoBehaviour
         }
     }
 
+    public void Clear()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject.Destroy(transform.GetChild(i).gameObject);
+        }
+    }
+
     private void SetLineSize()
     {
         line.GetComponent<RectTransform>().sizeDelta = new Vector2(10, Screen.height - (padding * 2));
+    }
+
+    public float Offset
+    {
+        get
+        {
+            return offset;
+        }
+    }
+    public int WorkScreenHeight
+    {
+        get
+        {
+            return workScreenHeight;
+        }
     }
 }
