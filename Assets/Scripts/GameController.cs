@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    private const int WIN_COMBINATION_SIZE = 5;
+    public static int WIN_COMBINATION_SIZE = 5;
 
     [SerializeField]
     private WhichSize whichSize;
@@ -95,7 +93,7 @@ public class GameController : MonoBehaviour
                     placeFigure.Put(whichGame.YourFigure, yourIndexes);
                     field[(int)yourIndexes.x, (int)yourIndexes.y] = (int)whichGame.YourFigure;
 
-                    if (IsWinSituation(whichGame.YourFigure)== (int)whichGame.YourFigure)
+                    if (IsWinSituation(whichGame.YourFigure))
                     {
                         winPanel.Appear("Вы выйграли!");
 
@@ -115,7 +113,7 @@ public class GameController : MonoBehaviour
                     placeFigure.Put(whichGame.EnemyFigure, enemyIndexes);
                     field[(int)enemyIndexes.x, (int)enemyIndexes.y] = (int)whichGame.EnemyFigure;
 
-                    if (IsWinSituation(whichGame.EnemyFigure)== (int)whichGame.EnemyFigure)
+                    if (IsWinSituation(whichGame.EnemyFigure))
                     {
                         winPanel.Appear("Бот выйграл!");
 
@@ -215,10 +213,11 @@ public class GameController : MonoBehaviour
         
     }
 
-    public int IsWinSituation(FigureType figureType)
+    public bool IsWinSituation(FigureType figureType)
     {
         //Проверяем горизонталь и вертикаль
         int mainDiag = 0, supDiag = 0, horizontal = 0, vertical = 0;
+
         for (int i = 0; i < whichSize.FieldSize; i++)
         {
             horizontal = 0;
@@ -231,7 +230,7 @@ public class GameController : MonoBehaviour
                 }
                 else if (horizontal == WIN_COMBINATION_SIZE)
                 {
-                    return (int)figureType;
+                    return true;
                 }
                 else
                 {
@@ -244,7 +243,7 @@ public class GameController : MonoBehaviour
                 }
                 else if (vertical == WIN_COMBINATION_SIZE)
                 {
-                    return (int)figureType;
+                    return true;
                 }
                 else
                 {
@@ -253,8 +252,7 @@ public class GameController : MonoBehaviour
             }
             if (horizontal == WIN_COMBINATION_SIZE || vertical == WIN_COMBINATION_SIZE)
             {
-                return (int)figureType;
-
+                return true;
             }
         }
 
@@ -268,7 +266,7 @@ public class GameController : MonoBehaviour
 
                 mainDiag = 0;
                 supDiag = 0;
-                int fieldIndex = indexK + (WIN_COMBINATION_SIZE - 1);
+                int boardIndex = indexK + (WIN_COMBINATION_SIZE - 1);
                 for (int i = 0; i < WIN_COMBINATION_SIZE; i++, indexJ++, indexK++)
                 {
                     if (field[(whichSize.FieldSize - 1) - indexJ, indexK] == (int)figureType)
@@ -276,19 +274,19 @@ public class GameController : MonoBehaviour
                         mainDiag++;
                     }
 
-                    if (field[(whichSize.FieldSize - 1) - indexJ, fieldIndex - indexK] == (int)figureType)
+                    if (field[(whichSize.FieldSize - 1) - indexJ, boardIndex - indexK] == (int)figureType)
                     {
                         supDiag++;
                     }
                 }
                 if (mainDiag == WIN_COMBINATION_SIZE || supDiag == WIN_COMBINATION_SIZE)
                 {
-                    return (int)figureType;
+                    return true;
                 }
             }
         }
 
-        return -1;
+        return false;
     }
 
     public int[,] Field
