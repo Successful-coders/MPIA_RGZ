@@ -47,4 +47,11 @@ public class WhichGame : MonoBehaviour
             return enemyFigure;
         }
     }
+    public FigureType TIE
+    {
+        get
+        {
+            return TIE;
+        }
+    }
 }

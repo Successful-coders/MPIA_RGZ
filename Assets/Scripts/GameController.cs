@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private WhichFirst whichFirst;
     [SerializeField]
-    private WhichGame whichGame;
+    public WhichGame whichGame;
     [SerializeField]
     private StartBtn startButton;
     [SerializeField]
@@ -95,7 +95,7 @@ public class GameController : MonoBehaviour
                     placeFigure.Put(whichGame.YourFigure, yourIndexes);
                     field[(int)yourIndexes.x, (int)yourIndexes.y] = (int)whichGame.YourFigure;
 
-                    if (IsWinSituation(whichGame.YourFigure))
+                    if (IsWinSituation(whichGame.YourFigure)== (int)whichGame.YourFigure)
                     {
                         winPanel.Appear("Вы выйграли!");
 
@@ -115,7 +115,7 @@ public class GameController : MonoBehaviour
                     placeFigure.Put(whichGame.EnemyFigure, enemyIndexes);
                     field[(int)enemyIndexes.x, (int)enemyIndexes.y] = (int)whichGame.EnemyFigure;
 
-                    if (IsWinSituation(whichGame.EnemyFigure))
+                    if (IsWinSituation(whichGame.EnemyFigure)== (int)whichGame.EnemyFigure)
                     {
                         winPanel.Appear("Бот выйграл!");
 
@@ -173,12 +173,52 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    private bool equals5(int a, int b, int c, int d, int k)
+    {
+        return a == b && b == c && c == d && d == k && a != -1;
+    }
 
-    private bool IsWinSituation(FigureType figureType)
+    public int checkWinner()//исправить на все поле
+    {
+        int winner = -1;
+
+        // horizontal
+        for (int i = 0; i < whichSize.FieldSize; i++)
+        {
+            if (equals5(field[i, 0], field[i, 1], field[i, 2], field[i, 3], field[i, 4]))
+            {
+                winner = field[i, 0];
+            }
+        }
+
+        // Vertical
+        for (int i = 0; i < whichSize.FieldSize; i++)
+        {
+            if (equals5(field[0, i], field[1, i], field[2, i], field[3, i], field[4, i]))
+            {
+                winner = field[0, i];
+            }
+        }
+
+        //// Diagonal
+        //if (equals5(field[0,0], field[1,1], field[2,2], field))
+        //{
+        //    winner = field[0,0];
+        //}
+        //if (equals5(field[2,0], field[1,1], field[0,2]))
+        //{
+        //    winner = field[2,0];
+        //}
+        //добавить ничью
+       
+            return winner;
+        
+    }
+
+    public int IsWinSituation(FigureType figureType)
     {
         //Проверяем горизонталь и вертикаль
         int mainDiag = 0, supDiag = 0, horizontal = 0, vertical = 0;
-
         for (int i = 0; i < whichSize.FieldSize; i++)
         {
             horizontal = 0;
@@ -191,7 +231,7 @@ public class GameController : MonoBehaviour
                 }
                 else if (horizontal == WIN_COMBINATION_SIZE)
                 {
-                    return true;
+                    return (int)figureType;
                 }
                 else
                 {
@@ -204,7 +244,7 @@ public class GameController : MonoBehaviour
                 }
                 else if (vertical == WIN_COMBINATION_SIZE)
                 {
-                    return true;
+                    return (int)figureType;
                 }
                 else
                 {
@@ -213,7 +253,8 @@ public class GameController : MonoBehaviour
             }
             if (horizontal == WIN_COMBINATION_SIZE || vertical == WIN_COMBINATION_SIZE)
             {
-                return true;
+                return (int)figureType;
+
             }
         }
 
@@ -227,7 +268,7 @@ public class GameController : MonoBehaviour
 
                 mainDiag = 0;
                 supDiag = 0;
-                int boardIndex = indexK + (WIN_COMBINATION_SIZE - 1);
+                int fieldIndex = indexK + (WIN_COMBINATION_SIZE - 1);
                 for (int i = 0; i < WIN_COMBINATION_SIZE; i++, indexJ++, indexK++)
                 {
                     if (field[(whichSize.FieldSize - 1) - indexJ, indexK] == (int)figureType)
@@ -235,19 +276,19 @@ public class GameController : MonoBehaviour
                         mainDiag++;
                     }
 
-                    if (field[(whichSize.FieldSize - 1) - indexJ, boardIndex - indexK] == (int)figureType)
+                    if (field[(whichSize.FieldSize - 1) - indexJ, fieldIndex - indexK] == (int)figureType)
                     {
                         supDiag++;
                     }
                 }
                 if (mainDiag == WIN_COMBINATION_SIZE || supDiag == WIN_COMBINATION_SIZE)
                 {
-                    return true;
+                    return (int)figureType;
                 }
             }
         }
 
-        return false;
+        return -1;
     }
 
     public int[,] Field
@@ -266,5 +307,6 @@ public class GameController : MonoBehaviour
 public enum FigureType
 {
     CROSS,
-    CIRCLE
+    CIRCLE,
+    TIE
 }
